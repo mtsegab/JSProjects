@@ -29,32 +29,49 @@ var highScore = 0;
 //     randNum = Math.floor(Math.random() * 20) + 1;
 // };
 
+const displayMessage = function (message) {
+  document.querySelector('.message').textContent = message;
+};
+
 document.querySelector('.again').addEventListener('click', function reset() {
   console.log('before reset randNum: ' + randNum);
   score = 10;
   randNum = Math.floor(Math.random() * 20) + 1;
   console.log('after reset randNum: ' + randNum);
+  displayMessage('Start guessing...');
+  document.querySelector('body').style.backgroundColor = '#222';
+  document.querySelector('.score').textContent = score;
+  document.querySelector('.guess').value = '';
+  document.querySelector('.number').textContent = '?';
 });
 
 document.querySelector('.check').addEventListener('click', function () {
   userGuess = document.querySelector('.guess').value;
   console.log('inside the click function ' + userGuess);
   console.log('inside the click function: randNum ' + randNum);
-  if (userGuess == randNum) {
-    document.querySelector('.number').textContent = randNum;
-    document.querySelector('.message').textContent = 'Congrats, You won!';
-    document.querySelector('body').style.backgroundColor = '#60b357';
-
-    if (score > highScore) {
-      highScore = score;
-      document.querySelector('.highscore').textContent = highScore;
-    }
-  } else if (userGuess > randNum) {
-    score--;
-    document.querySelector('.message').textContent = 'Try a smaller number';
+  if (!userGuess) {
+    displayMessage('Your input is not correct');
   } else {
-    score--;
-    document.querySelector('.message').textContent = 'Try a larger number';
+    if (userGuess == randNum) {
+      document.querySelector('.number').textContent = randNum;
+      displayMessage('Congrats, You won!');
+      document.querySelector('body').style.backgroundColor = '#60b357';
+
+      if (score > highScore) {
+        highScore = score;
+        document.querySelector('.highscore').textContent = highScore;
+      }
+    } else if (userGuess !== randNum) {
+      if (score > 1) {
+        displayMessage(
+          userGuess > randNum ? 'Try a smaller number' : 'Try a larger number'
+        );
+        score--;
+        document.querySelector('.score').textContent = score;
+      } else {
+        displayMessage('You lost the game :(');
+        document.querySelector('.score').textContent = 0;
+      }
+    }
   }
-  document.querySelector('.score').textContent = score;
 });
