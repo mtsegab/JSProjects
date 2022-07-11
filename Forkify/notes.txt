@@ -1,0 +1,49 @@
+stories:
+- search for recipes
+- update the # of servings
+- Bookmark recipes
+- Your own recipes
+- retain the bookmarks and recipes 
+
+
+Components of Any Architecture
+- Business Logic
+- State - Single source of truth --> UI should be kept in sync
+- HTTP Library - making and receiving AJAX requests
+- Application Logic (Router) - Handles navigation and UI events
+- Presentation Layer (UI Layer) - displays application State
+
+
+Model - Business Logic | state | HTTP Library
+Controller - Application logic --> like handling an event
+View - Presentation
+
+PS: MVP:
+
+Events should be handled in the Controller (otherwise we would have application logic in the view)
+Events should be listened for in the view (otherwise we would need DOM elements in the Controller)
+
+Code that knows when to react: PUBLISHER
+Code taht wants to react: SUBSCRIBER
+
+Therefore put the publisher inthe view and the SUBSCRIBER in the .js
+HOw:
+You call the view's publisher inside the init() in the Controller
+SUBSCRIBER to publisher by passing in the subscriber function
+
+What is the difference between:
+
+const controlSearchResults = function () { 
+vs const controlSearchResults() {
+
+    //ask yourself what is the most important event to listen here?
+    //this thing is a form so --> submit form instead of onClick
+
+
+converting from truly private to protected
+
+# --> _
+
+#TODO
+what is html attributes referring to and how/when to use them.
+Ex: <button data-goto="" ----> what is this data-goto referring to?
