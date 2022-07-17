@@ -2,11 +2,13 @@
 import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import resultsView from './views/resultsView.js';
+import bookmarksView from './views/bookmarksView.js';
 import searchView from './views/searchView.js';
 import paginationView from './views/paginationView.js';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import { async } from 'regenerator-runtime';
 
 // https://forkify-api.herokuapp.com/v2
 
@@ -21,11 +23,20 @@ const controlRecipes = async function () {
     if (!id) return;
     recipeView.renderSpinner();
 
-    //1. loading recipe
+    // 0) Update results view to mark selected search result
+    resultsView.update(model.getSearchResultsPage());
+    bookmarksView.update(model.state.bookmarks);
+
+    //1. Updating bookmarks view
+    bookmarksView.update(model.state.bookmarks);
+
+    //2. loading recipe
     await model.loadRecipe(id);
 
-    //2. rendering recipe
+    //3. rendering recipe
     recipeView.render(model.state.recipe);
+
+    // controlServings(model.state.recipe.servings);
   } catch (err) {
     alert('here>>inside contrlRecipes  ' + err);
     recipeView.renderError(err);
@@ -36,7 +47,7 @@ const controlSearchResults = async function () {
   try {
     // 0) spinner
     resultsView.renderSpinner();
-    console.log(resultsView);
+    // console.log(resultsView);
     // 1) Get search query
     const query = searchView.getQuery();
     if (!query) return;
@@ -61,11 +72,44 @@ const controlPagination = function (goToPage) {
   paginationView.render(model.state.search);
 };
 
+const controlServings = function (newServings) {
+  // update the recipe servings (in state)
+  model.updateServings(newServings);
+  // Update the recipe view
+  recipeView.render(model.state.recipe);
+  // recipeView.update(model.state.recipe);
+};
+
+const controlAddBookmark = function () {
+  // 1. Add/Remove bookmark
+  if (!model.state.recipe.bookmarked) {
+    model.addBookmark(model.state.recipe);
+  } else {
+    model.deleteBookmark(model.state.recipe.id);
+  }
+  console.log(model.state.recipe);
+  console.log('bookmarked list*>>>>*****');
+  console.log(model.state.bookmarks);
+
+  // 2. update recipe view
+  recipeView.update(model.state.recipe);
+
+  // 3. Render bookmarks
+  bookmarksView.render(model.state.bookmarks);
+};
+
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
+
 const init = function () {
   //note: calling the publisher inside the controller and passing the subscriber
+  bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
+  recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerAddBookMark(controlAddBookmark);
 };
 
 init();

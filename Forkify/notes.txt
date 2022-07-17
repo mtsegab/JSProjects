@@ -47,3 +47,15 @@ converting from truly private to protected
 #TODO
 what is html attributes referring to and how/when to use them.
 Ex: <button data-goto="" ----> what is this data-goto referring to?
+
+
+You do event delegation by listening to the parent element as opposed to 
+the element itself. Then check if the element is selected. This is in a 
+situation where on loading it is only the parent element is rendered.
+
+Child-parent
+
+who calls is the parent 
+who being called is the Child
+
+check End of #304 and begining of #305
